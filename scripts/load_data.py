@@ -1,19 +1,30 @@
-import requests
-import pandas as pd
+import mlflow
+import mlflow.sklearn
+from scripts.load_data import load_data_from_api
+from scripts.preprocess_data import preprocess_data
 
-def load_data_from_api(api_url):
-    # Récupérer les données depuis l'API
-    response = requests.get(api_url)
-    if response.status_code == 200:
-        data = response.json()
-        df = pd.DataFrame(data)
-        print("Données chargées depuis l'API :")
-        print(df.head())
-        return df
-    else:
-        raise Exception(f"Erreur lors de la récupération des données : {response.status_code}")
+def predict_fraud(api_url, model_uri):
+    """
+    Charge les données, prétraite et effectue des prédictions avec un modèle MLflow.
+    """
+    # Charger les données depuis l'API
+    df = load_data_from_api(api_url)
 
-# Exemple d'utilisation
+    # Charger le modèle depuis MLflow
+    model = mlflow.sklearn.load_model(model_uri)
+
+    # Prétraiter les données
+    X, _ = preprocess_data(df)
+
+    # Effectuer des prédictions
+    predictions = model.predict(X)
+    df["fraud_prediction"] = predictions
+
+    # Sauvegarder les résultats localement
+    df.to_csv("predictions.csv", index=False)
+    print("Prédictions sauvegardées dans 'predictions.csv'.")
+
 if __name__ == "__main__":
-    API_URL = 'https://real-time-payments-api.herokuapp.com/current-transactions'  # Remplacez par l'URL de votre API
-    df = load_data_from_api(API_URL)
+    API_URL = "https://real-time-payments-api.herokuapp.com/current-transactions"
+    MLFLOW_MODEL_URI = "runs:/3/fraud_detection_model"
+    predict_fraud(API_URL, MLFLOW_MODEL_URI)

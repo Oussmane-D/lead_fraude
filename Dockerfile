@@ -1,7 +1,7 @@
 # Utiliser une image de base Python officielle légère
 FROM python:3.9-slim
 
-# Mettre à jour le système et installer les dépendances système (optionnel, selon vos besoins)
+# Mettre à jour le système et installer les dépendances système nécessaires
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential && \
     apt-get clean && \
@@ -10,14 +10,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Définir le répertoire de travail dans le conteneur
 WORKDIR /app
 
-# Copier uniquement les fichiers nécessaires dans le conteneur pour optimiser la construction
+# Copier uniquement le fichier requirements.txt pour optimiser le cache Docker
 COPY requirements.txt .
 
-# Installer les dépendances Python à partir du fichier requirements.txt
+# Installer les dépendances Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copier les scripts après l'installation des dépendances pour accélérer la construction en cas de modification
-COPY scripts/ ./scripts/
+# Copier tout le reste dans le conteneur (scripts et autres fichiers nécessaires)
+COPY . .
+
+# Exposer un port si nécessaire (par exemple, pour MLflow ou une API)
+# EXPOSE 5000
 
 # Définir la commande par défaut pour exécuter le script principal
-CMD ["python", "scripts/main.py"]
+CMD ["python", "scripts/predict.py"]

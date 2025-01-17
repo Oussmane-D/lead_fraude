@@ -1,24 +1,18 @@
-import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
 def preprocess_data(df):
-    # Supprimer les colonnes non nécessaires
-    df = df.drop(columns=["Unnamed: 0", "cc_num", "zip", "unix_time"])
+    """
+    Prétraite les données : nettoyage et normalisation.
+    """
+    # Supprimer les colonnes inutiles
+    df = df.drop(columns=["Unnamed: 0", "cc_num", "zip", "unix_time"], errors="ignore")
 
     # Normaliser les colonnes numériques
-    scaler = StandardScaler()
     numeric_cols = ["amt", "lat", "long", "city_pop", "merch_lat", "merch_long"]
+    scaler = StandardScaler()
     df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
 
-    # Séparer les features et la cible
-    X = df.drop(columns=["is_fraud"])
-    y = df["is_fraud"]
-
-    print("Données prétraitées :")
-    print(X.head())
+    # Séparer les features (X) et la cible (y)
+    X = df.drop(columns=["is_fraud"], errors="ignore")
+    y = df["is_fraud"] if "is_fraud" in df.columns else None
     return X, y
-
-# Exemple d'utilisation
-if __name__ == "__main__":
-    df = pd.read_csv("transactions.csv")  # Remplacez par le chargement depuis l'API si nécessaire
-    X, y = preprocess_data(df)
