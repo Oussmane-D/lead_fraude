@@ -54,7 +54,7 @@ def save_predictions_to_s3(df):
     df.to_csv(local_file, index=False)
     
     # Téléverser le fichier sur S3
-    s3 = boto3.client('s3', aws_access_key_id='AKIAXHQKDFFV6ESAFKWG', aws_secret_access_key='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')
+    s3 = boto3.client('s3', aws_access_key_id='', aws_secret_access_key='')
     s3.upload_file(local_file, S3_BUCKET_NAME, S3_PREDICTIONS_FILE)
     print(f"Résultats enregistrés dans S3 : {S3_BUCKET_NAME}/{S3_PREDICTIONS_FILE}")
 
