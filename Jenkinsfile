@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/Oussmane-D/lead_fraude.git'
+                git branch: 'main', url: 'https://github.com/Oussmane-D/lead_fraude.git'
             }
         }
         stage('Install Dependencies') {
@@ -13,7 +13,7 @@ pipeline {
         }
         stage('Run Predictions') {
             steps {
-                sh 'python scripts/predict.py'
+                sh 'python scripts/main.py'
             }
         }
     }
