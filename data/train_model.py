@@ -3,7 +3,7 @@ import mlflow.sklearn
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
-from scripts.load_data import load_data_from_api
+#from scripts.load_data import load_data_from_api
 from scripts.preprocess_data import preprocess_data
 
 def train_model(api_url):
