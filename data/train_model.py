@@ -1,17 +1,17 @@
-import pandas as pd
+import mlflow
+import mlflow.sklearn
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
-import mlflow
-import mlflow.sklearn
+from scripts.load_data import load_data_from_api
 from scripts.preprocess_data import preprocess_data
 
-def train_model(data_path):
+def train_model(api_url):
     """
     Charge les données, les prétraite, entraîne un modèle et l'enregistre dans MLflow.
     """
-    # Charger les données
-    df = pd.read_csv(data_path)
+    # Charger les données depuis l'API
+    df = load_data_from_api(api_url)
 
     # Prétraiter les données
     X, y = preprocess_data(df)
@@ -35,5 +35,5 @@ def train_model(data_path):
         print("Modèle enregistré avec MLflow.")
 
 if __name__ == "__main__":
-    data_path = "data/transactions.csv"  # Chemin relatif vers le fichier
-    train_model(data_path)
+    API_URL = "https://real-time-payments-api.herokuapp.com/current-transactions"
+    train_model(API_URL)
