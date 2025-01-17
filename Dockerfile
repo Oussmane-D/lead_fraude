@@ -16,11 +16,11 @@ COPY requirements.txt .
 # Installer les dépendances Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copier tout le reste dans le conteneur (scripts et autres fichiers nécessaires)
+# Copier tous les fichiers dans le conteneur
 COPY . .
 
-# Exposer un port si nécessaire (par exemple, pour MLflow ou une API)
-# EXPOSE 5000
+# Ajouter /app au PYTHONPATH
+ENV PYTHONPATH=/app
 
 # Définir la commande par défaut pour exécuter le script principal
 CMD ["python", "scripts/predict.py"]
